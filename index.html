@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Practice - Pratique Inglês</title>
+
+    <!-- Meta tags para SEO e compartilhamento -->
+    <meta name="description" content="Aprenda inglês ouvindo frases em português e inglês. Quiz, prática de pronúncia e diálogos interativos.">
+    <meta name="keywords" content="inglês, english, aprender, praticar, pronúncia, frases, português">
+    <meta name="author" content="English Practice">
+    <meta name="theme-color" content="#0d1117">
+
+    <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+    <meta property="og:title" content="English Practice - Pratique Inglês">
+    <meta property="og:description" content="Aprenda inglês ouvindo frases em português e inglês. Quiz, prática de pronúncia e diálogos interativos.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="English Practice - Pratique Inglês">
+    <meta name="twitter:description" content="Aprenda inglês ouvindo frases em português e inglês.">
+
+    <!-- Favicon (emoji de fone de ouvido) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎧</text></svg>">
+
+    <!-- iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="English Practice">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎧 English Practice</h1>
+            <p class="subtitle">Ouça e aprenda inglês</p>
+        </header>
+
+        <!-- Navegação entre modos -->
+        <nav class="mode-nav">
+            <button class="mode-btn active" data-mode="player">
+                🔊 Player
+            </button>
+            <button class="mode-btn" data-mode="quiz">
+                📝 Quiz
+            </button>
+            <button class="mode-btn" data-mode="pronunciation">
+                🎤 Pronúncia
+            </button>
+            <button class="mode-btn" data-mode="dialogs">
+                💬 Diálogos
+            </button>
+            <button class="mode-btn" data-mode="reading">
+                📖 Leitura
+            </button>
+        </nav>
+
+        <!-- MODO PLAYER -->
+        <section id="player-mode" class="mode-section active">
+            <div class="card">
+                <div class="phrase-container">
+                    <div class="phrase-box">
+                        <span class="flag">🇧🇷</span>
+                        <p id="phrase-pt" class="phrase">Clique em "Nova Frase" para começar</p>
+                    </div>
+                    <div class="phrase-box">
+                        <span class="flag">🇺🇸</span>
+                        <p id="phrase-en" class="phrase hidden">---</p>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="btn-new" class="btn btn-primary">
+                        🎲 Nova Frase
+                    </button>
+                    <button id="btn-play" class="btn btn-success" disabled>
+                        ▶️ Ouvir
+                    </button>
+                    <button id="btn-show" class="btn btn-secondary" disabled>
+                        👁️ Mostrar Inglês
+                    </button>
+                </div>
+
+                <div class="speed-control">
+                    <label for="speed">Velocidade da fala:</label>
+                    <input type="range" id="speed" min="0.5" max="1.5" step="0.1" value="0.9">
+                    <span id="speed-value">0.9x</span>
+                </div>
+
+                <div id="status" class="status"></div>
+            </div>
+
+            <div class="counter">
+                Frase <span id="current-index">0</span> de <span id="total-phrases">0</span>
+            </div>
+        </section>
+
+        <!-- MODO QUIZ -->
+        <section id="quiz-mode" class="mode-section">
+            <div class="card">
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <span class="flag">🇧🇷</span>
+                        <p id="quiz-phrase-pt" class="phrase">Clique em "Iniciar Quiz" para começar</p>
+                    </div>
+
+                    <div class="quiz-input-area">
+                        <input type="text" id="quiz-answer" placeholder="Digite a tradução em inglês..." disabled>
+                        <button id="btn-check" class="btn btn-success" disabled>
+                            ✓ Verificar
+                        </button>
+                    </div>
+
+                    <div id="quiz-feedback" class="quiz-feedback"></div>
+
+                    <div class="quiz-controls">
+                        <button id="btn-start-quiz" class="btn btn-primary">
+                            🚀 Iniciar Quiz
+                        </button>
+                        <button id="btn-hint" class="btn btn-secondary" disabled>
+                            💡 Dica
+                        </button>
+                        <button id="btn-next-quiz" class="btn btn-primary" disabled>
+                            ➡️ Próxima
+                        </button>
+                    </div>
+                </div>
+
+                <div class="quiz-score">
+                    <span>✅ Acertos: <strong id="score-correct">0</strong></span>
+                    <span>❌ Erros: <strong id="score-wrong">0</strong></span>
+                    <span>📊 Taxa: <strong id="score-rate">0%</strong></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODO PRONÚNCIA -->
+        <section id="pronunciation-mode" class="mode-section">
+            <div class="card">
+                <div class="pronunciation-container">
+                    <p class="pronunciation-instruction">
+                        Ouça a frase e tente repetir. O app vai verificar sua pronúncia!
+                    </p>
+
+                    <div class="phrase-box pronunciation-target">
+                        <span class="flag">🇺🇸</span>
+                        <p id="pron-phrase" class="phrase">Clique em "Nova Frase" para começar</p>
+                    </div>
+
+                    <div class="phrase-box pronunciation-result">
+                        <span class="flag">🎤</span>
+                        <p id="pron-result" class="phrase">Sua fala aparecerá aqui...</p>
+                    </div>
+
+                    <div id="pron-feedback" class="pronunciation-feedback"></div>
+
+                    <div class="controls">
+                        <button id="btn-pron-new" class="btn btn-primary">
+                            🎲 Nova Frase
+                        </button>
+                        <button id="btn-pron-listen" class="btn btn-secondary" disabled>
+                            🔊 Ouvir
+                        </button>
+                        <button id="btn-pron-speak" class="btn btn-success" disabled>
+                            🎤 Falar
+                        </button>
+                    </div>
+
+                    <div id="pron-status" class="status"></div>
+                </div>
+
+                <div class="quiz-score">
+                    <span>✅ Acertos: <strong id="pron-correct">0</strong></span>
+                    <span>❌ Erros: <strong id="pron-wrong">0</strong></span>
+                    <span>📊 Taxa: <strong id="pron-rate">0%</strong></span>
+                </div>
+            </div>
+
+            <div class="browser-warning" id="browser-warning">
+                ⚠️ Reconhecimento de voz funciona melhor no Chrome ou Edge
+            </div>
+        </section>
+
+        <!-- MODO DIÁLOGOS -->
+        <section id="dialogs-mode" class="mode-section">
+            <div class="card">
+                <div class="dialog-container">
+                    <div class="dialog-selector">
+                        <label for="dialog-select">Escolha uma situação:</label>
+                        <select id="dialog-select">
+                            <option value="">-- Selecione --</option>
+                        </select>
+                    </div>
+
+                    <div id="dialog-description" class="dialog-description"></div>
+
+                    <div id="dialog-conversation" class="dialog-conversation">
+                        <!-- Mensagens do diálogo aparecem aqui -->
+                    </div>
+
+                    <div class="dialog-controls">
+                        <button id="btn-dialog-start" class="btn btn-primary" disabled>
+                            ▶️ Iniciar Diálogo
+                        </button>
+                        <button id="btn-dialog-repeat" class="btn btn-secondary" disabled>
+                            🔄 Repetir
+                        </button>
+                        <button id="btn-dialog-practice" class="btn btn-success" disabled>
+                            🎤 Praticar Respostas
+                        </button>
+                    </div>
+
+                    <div id="dialog-status" class="status"></div>
+                </div>
+            </div>
+
+            <div class="dialog-legend">
+                <span class="legend-item"><span class="dot dot-a"></span> Pessoa A</span>
+                <span class="legend-item"><span class="dot dot-b"></span> Pessoa B (você)</span>
+            </div>
+        </section>
+
+        <!-- MODO LEITURA -->
+        <section id="reading-mode" class="mode-section">
+            <div class="card">
+                <div class="reading-container">
+                    <div class="reading-header">
+                        <div class="reading-level-selector">
+                            <label for="reading-level">Nível:</label>
+                            <select id="reading-level">
+                                <option value="all">Todos</option>
+                                <option value="beginner">Iniciante</option>
+                                <option value="intermediate">Intermediário</option>
+                                <option value="advanced">Avançado</option>
+                            </select>
+                        </div>
+                        <span id="reading-level-badge" class="level-badge"></span>
+                    </div>
+
+                    <div class="reading-title-box">
+                        <h3 id="reading-title">Clique em "Novo Texto" para começar</h3>
+                    </div>
+
+                    <div class="reading-text-box">
+                        <p id="reading-text" class="reading-text">
+                            Selecione um texto aleatório para praticar sua leitura em voz alta.
+                            Você pode ouvir o texto sendo lido e acompanhar junto.
+                        </p>
+                    </div>
+
+                    <div class="reading-controls">
+                        <button id="btn-reading-new" class="btn btn-primary">
+                            🎲 Novo Texto
+                        </button>
+                        <button id="btn-reading-play" class="btn btn-success" disabled>
+                            ▶️ Ouvir Texto
+                        </button>
+                        <button id="btn-reading-pause" class="btn btn-secondary" disabled>
+                            ⏸️ Pausar
+                        </button>
+                    </div>
+
+                    <div class="speed-control">
+                        <label for="reading-speed">Velocidade da leitura:</label>
+                        <input type="range" id="reading-speed" min="0.5" max="1.5" step="0.1" value="0.8">
+                        <span id="reading-speed-value">0.8x</span>
+                    </div>
+
+                    <div id="reading-status" class="status"></div>
+                </div>
+            </div>
+
+            <div class="reading-tip">
+                💡 Dica: Ouça primeiro, depois tente ler junto em voz alta acompanhando o áudio!
+            </div>
+        </section>
+
+        <footer>
+            <p>Use fones de ouvido para melhor experiência 🎧</p>
+        </footer>
+    </div>
+
+    <script src="frases.js"></script>
+    <script src="dialogos.js"></script>
+    <script src="textos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
