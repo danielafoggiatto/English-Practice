@@ -871,8 +871,9 @@ function speakNextChunk() {
     utterance.rate = state.reading.speed;
     utterance.pitch = 1;
 
-    // Selecionar a melhor voz em inglês (evita sotaque indiano)
-    const voice = getBestEnglishVoice();
+    // Selecionar voz em inglês
+    const voices = speechSynthesis.getVoices();
+    const voice = voices.find(v => v.lang.startsWith('en'));
     if (voice) {
         utterance.voice = voice;
     }
@@ -930,35 +931,6 @@ function setReadingStatus(message) {
 // Funções de Voz (Web Speech API)
 // ==========================================
 
-// Seleciona a melhor voz em inglês (prioriza US e UK, evita sotaques indianos etc)
-function getBestEnglishVoice() {
-    const voices = speechSynthesis.getVoices();
-
-    // Ordem de preferência: en-US, en-GB, en-AU, depois qualquer en-*
-    const preferredLangs = ['en-US', 'en-GB', 'en-AU'];
-
-    for (const lang of preferredLangs) {
-        // Prefere vozes do Google ou Microsoft (geralmente são melhores)
-        const premiumVoice = voices.find(v =>
-            v.lang === lang && (v.name.includes('Google') || v.name.includes('Microsoft'))
-        );
-        if (premiumVoice) return premiumVoice;
-
-        // Se não tiver premium, pega qualquer uma desse idioma
-        const voice = voices.find(v => v.lang === lang);
-        if (voice) return voice;
-    }
-
-    // Fallback: qualquer voz em inglês que NÃO seja indiana
-    const nonIndianVoice = voices.find(v =>
-        v.lang.startsWith('en') && !v.lang.includes('IN')
-    );
-    if (nonIndianVoice) return nonIndianVoice;
-
-    // Último recurso: qualquer voz em inglês
-    return voices.find(v => v.lang.startsWith('en'));
-}
-
 function speak(text, lang) {
     return new Promise((resolve, reject) => {
         speechSynthesis.cancel();
@@ -968,14 +940,10 @@ function speak(text, lang) {
         utterance.rate = state.speed;
         utterance.pitch = 1;
 
-        // Usar a melhor voz disponível para inglês
-        if (lang.startsWith('en')) {
-            const voice = getBestEnglishVoice();
-            if (voice) utterance.voice = voice;
-        } else {
-            const voices = speechSynthesis.getVoices();
-            const voice = voices.find(v => v.lang.startsWith(lang.split('-')[0]));
-            if (voice) utterance.voice = voice;
+        const voices = speechSynthesis.getVoices();
+        const voice = voices.find(v => v.lang.startsWith(lang.split('-')[0]));
+        if (voice) {
+            utterance.voice = voice;
         }
 
         utterance.onend = () => resolve();
