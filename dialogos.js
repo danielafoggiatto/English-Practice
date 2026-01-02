@@ -191,5 +191,131 @@ const dialogos = [
             { pessoa: "A", en: "Sounds great! See you Saturday then!", pt: "Ótimo! Te vejo no sábado então!" },
             { pessoa: "B", en: "See you! Take care!", pt: "Até lá! Se cuida!" }
         ]
+    },
+    {
+        id: "daily-standup",
+        titulo: "🧑‍💻 Daily Standup",
+        descricao: "Reunião diária com o time de desenvolvimento.",
+        conversa: [
+            { pessoa: "A", en: "Good morning everyone! Let's start our daily. Who wants to go first?", pt: "Bom dia a todos! Vamos começar nossa daily. Quem quer começar?" },
+            { pessoa: "B", en: "I can start. Yesterday I finished automating the login tests.", pt: "Eu posso começar. Ontem terminei de automatizar os testes de login." },
+            { pessoa: "A", en: "Great! What are you working on today?", pt: "Ótimo! No que você vai trabalhar hoje?" },
+            { pessoa: "B", en: "Today I'll work on the checkout flow tests using Playwright.", pt: "Hoje vou trabalhar nos testes do fluxo de checkout usando Playwright." },
+            { pessoa: "A", en: "Do you have any blockers?", pt: "Você tem algum bloqueio?" },
+            { pessoa: "B", en: "Yes, I need access to the staging environment to run the tests.", pt: "Sim, preciso de acesso ao ambiente de staging para rodar os testes." },
+            { pessoa: "A", en: "I'll ask DevOps to give you access right after this meeting.", pt: "Vou pedir pro DevOps te dar acesso logo após essa reunião." },
+            { pessoa: "B", en: "Perfect, thank you! That's all from me.", pt: "Perfeito, obrigado! É isso da minha parte." },
+            { pessoa: "A", en: "Thanks! Let's keep the tests updated with the new features.", pt: "Obrigado! Vamos manter os testes atualizados com as novas features." },
+            { pessoa: "B", en: "Sure, I'll sync with the developers about the changes.", pt: "Claro, vou sincronizar com os desenvolvedores sobre as mudanças." }
+        ]
+    },
+    {
+        id: "bug-report",
+        titulo: "🐛 Reportando um Bug",
+        descricao: "Você encontrou um bug e precisa reportar ao desenvolvedor.",
+        conversa: [
+            { pessoa: "B", en: "Hey, do you have a minute? I found a bug in the new feature.", pt: "Ei, você tem um minuto? Encontrei um bug na nova feature." },
+            { pessoa: "A", en: "Sure, what's the issue?", pt: "Claro, qual é o problema?" },
+            { pessoa: "B", en: "The submit button doesn't work when the form is empty.", pt: "O botão de enviar não funciona quando o formulário está vazio." },
+            { pessoa: "A", en: "Can you show me the steps to reproduce?", pt: "Você pode me mostrar os passos para reproduzir?" },
+            { pessoa: "B", en: "Yes, first go to the registration page and click submit without filling anything.", pt: "Sim, primeiro vá para a página de cadastro e clique em enviar sem preencher nada." },
+            { pessoa: "A", en: "I see. What's the expected behavior?", pt: "Entendi. Qual é o comportamento esperado?" },
+            { pessoa: "B", en: "It should show validation errors, but instead it just freezes.", pt: "Deveria mostrar erros de validação, mas ao invés disso apenas trava." },
+            { pessoa: "A", en: "Got it. Did you check the console for any errors?", pt: "Entendi. Você verificou o console por algum erro?" },
+            { pessoa: "B", en: "Yes, there's a null pointer exception. I'll attach the screenshot to the ticket.", pt: "Sim, tem uma exceção de ponteiro nulo. Vou anexar a captura de tela no ticket." },
+            { pessoa: "A", en: "Thanks for the detailed report. I'll fix it today.", pt: "Obrigado pelo relatório detalhado. Vou corrigir hoje." },
+            { pessoa: "B", en: "Great! Let me know when it's ready and I'll retest.", pt: "Ótimo! Me avise quando estiver pronto e eu retesto." }
+        ]
+    },
+    {
+        id: "code-review",
+        titulo: "👀 Code Review de Testes",
+        descricao: "Você está participando de uma revisão de código dos testes automatizados.",
+        conversa: [
+            { pessoa: "A", en: "I reviewed your test automation pull request.", pt: "Eu revisei seu pull request de automação de testes." },
+            { pessoa: "B", en: "Thanks! Do you have any feedback?", pt: "Obrigado! Você tem algum feedback?" },
+            { pessoa: "A", en: "Yes, I noticed you're using hard-coded waits. Can you use dynamic waits instead?", pt: "Sim, notei que você está usando waits fixos. Pode usar waits dinâmicos ao invés?" },
+            { pessoa: "B", en: "You're right. I'll replace them with waitForSelector in Playwright.", pt: "Você tem razão. Vou substituir por waitForSelector no Playwright." },
+            { pessoa: "A", en: "Also, the test data should be in a separate file for better maintainability.", pt: "Além disso, os dados de teste devem estar em um arquivo separado para melhor manutenção." },
+            { pessoa: "B", en: "Good point. I'll create a fixtures folder for test data.", pt: "Boa observação. Vou criar uma pasta de fixtures para dados de teste." },
+            { pessoa: "A", en: "One more thing - can you add assertions for the error messages?", pt: "Mais uma coisa - você pode adicionar assertions para as mensagens de erro?" },
+            { pessoa: "B", en: "Sure, I'll add expect statements to verify the error text.", pt: "Claro, vou adicionar statements expect para verificar o texto do erro." },
+            { pessoa: "A", en: "Perfect! Once you make those changes, I'll approve the PR.", pt: "Perfeito! Assim que fizer essas mudanças, aprovo o PR." },
+            { pessoa: "B", en: "Thanks for the review! I'll push the updates soon.", pt: "Obrigado pela revisão! Vou enviar as atualizações em breve." }
+        ]
+    },
+    {
+        id: "sprint-planning",
+        titulo: "📋 Sprint Planning - QA",
+        descricao: "Planejamento de sprint discutindo tarefas de QA.",
+        conversa: [
+            { pessoa: "A", en: "Let's discuss the QA tasks for this sprint.", pt: "Vamos discutir as tarefas de QA para essa sprint." },
+            { pessoa: "B", en: "I've estimated the test automation effort for the new features.", pt: "Eu estimei o esforço de automação de testes para as novas features." },
+            { pessoa: "A", en: "How many story points for the payment module tests?", pt: "Quantos story points para os testes do módulo de pagamento?" },
+            { pessoa: "B", en: "I'd say 8 points. It involves API testing and UI testing.", pt: "Eu diria 8 pontos. Envolve testes de API e testes de UI." },
+            { pessoa: "A", en: "Do we need to update the existing test suite?", pt: "Precisamos atualizar a suíte de testes existente?" },
+            { pessoa: "B", en: "Yes, some locators changed. I'll need 3 points for maintenance.", pt: "Sim, alguns locators mudaram. Vou precisar de 3 pontos para manutenção." },
+            { pessoa: "A", en: "Can we run the tests in parallel to speed up the pipeline?", pt: "Podemos rodar os testes em paralelo para acelerar o pipeline?" },
+            { pessoa: "B", en: "Yes, Playwright supports parallel execution. I'll configure it.", pt: "Sim, o Playwright suporta execução paralela. Vou configurar." },
+            { pessoa: "A", en: "What about the flaky tests we discussed last week?", pt: "E quanto aos testes instáveis que discutimos semana passada?" },
+            { pessoa: "B", en: "I'll investigate and fix them. Probably 2 points for that.", pt: "Vou investigar e corrigir. Provavelmente 2 pontos para isso." },
+            { pessoa: "A", en: "Sounds good. Let's add these to the sprint backlog.", pt: "Parece bom. Vamos adicionar isso ao backlog da sprint." }
+        ]
+    },
+    {
+        id: "qa-interview",
+        titulo: "🎯 Entrevista Técnica - QA",
+        descricao: "Entrevista técnica para vaga de QA Automation.",
+        conversa: [
+            { pessoa: "A", en: "Tell me about your experience with test automation.", pt: "Me conte sobre sua experiência com automação de testes." },
+            { pessoa: "B", en: "I have 3 years of experience, mainly with Playwright and Cypress.", pt: "Tenho 3 anos de experiência, principalmente com Playwright e Cypress." },
+            { pessoa: "A", en: "Why do you prefer Playwright over other frameworks?", pt: "Por que você prefere Playwright em vez de outros frameworks?" },
+            { pessoa: "B", en: "It has better cross-browser support and auto-wait features.", pt: "Ele tem melhor suporte cross-browser e recursos de auto-wait." },
+            { pessoa: "A", en: "How do you handle dynamic elements in your tests?", pt: "Como você lida com elementos dinâmicos nos seus testes?" },
+            { pessoa: "B", en: "I use data-testid attributes and avoid relying on CSS classes.", pt: "Eu uso atributos data-testid e evito depender de classes CSS." },
+            { pessoa: "A", en: "What's your approach to test data management?", pt: "Qual é sua abordagem para gerenciamento de dados de teste?" },
+            { pessoa: "B", en: "I use fixtures and factories to create isolated test data.", pt: "Eu uso fixtures e factories para criar dados de teste isolados." },
+            { pessoa: "A", en: "How do you integrate tests into the CI/CD pipeline?", pt: "Como você integra testes no pipeline de CI/CD?" },
+            { pessoa: "B", en: "I configure GitHub Actions to run tests on every pull request.", pt: "Eu configuro GitHub Actions para rodar testes em cada pull request." },
+            { pessoa: "A", en: "Excellent! Do you have experience with API testing as well?", pt: "Excelente! Você também tem experiência com testes de API?" },
+            { pessoa: "B", en: "Yes, I use Playwright's request context for API tests.", pt: "Sim, eu uso o request context do Playwright para testes de API." }
+        ]
+    },
+    {
+        id: "test-failure",
+        titulo: "❌ Investigando Falha no Pipeline",
+        descricao: "Os testes falharam no CI e você precisa investigar.",
+        conversa: [
+            { pessoa: "A", en: "Hey, the pipeline failed. Can you check the test results?", pt: "Ei, o pipeline falhou. Pode verificar os resultados dos testes?" },
+            { pessoa: "B", en: "Sure, let me look at the logs.", pt: "Claro, deixa eu olhar os logs." },
+            { pessoa: "B", en: "I found the issue. The test is timing out on the checkout page.", pt: "Encontrei o problema. O teste está dando timeout na página de checkout." },
+            { pessoa: "A", en: "Is it a flaky test or a real bug?", pt: "É um teste instável ou um bug real?" },
+            { pessoa: "B", en: "Let me run it locally to check... It passed locally.", pt: "Deixa eu rodar localmente para verificar... Passou localmente." },
+            { pessoa: "A", en: "Maybe it's an environment issue?", pt: "Talvez seja um problema de ambiente?" },
+            { pessoa: "B", en: "Yes, the staging server is slower. I'll increase the timeout.", pt: "Sim, o servidor de staging é mais lento. Vou aumentar o timeout." },
+            { pessoa: "A", en: "Should we add retry logic for unstable tests?", pt: "Devemos adicionar lógica de retry para testes instáveis?" },
+            { pessoa: "B", en: "Good idea. Playwright has a built-in retry feature.", pt: "Boa ideia. O Playwright tem um recurso de retry nativo." },
+            { pessoa: "A", en: "Let me know when you push the fix.", pt: "Me avise quando enviar a correção." },
+            { pessoa: "B", en: "Done! The pipeline should pass now.", pt: "Pronto! O pipeline deve passar agora." }
+        ]
+    },
+    {
+        id: "pair-testing",
+        titulo: "👥 Pair Testing Session",
+        descricao: "Sessão de testes em par com um desenvolvedor.",
+        conversa: [
+            { pessoa: "A", en: "Ready for our pair testing session?", pt: "Pronto para nossa sessão de pair testing?" },
+            { pessoa: "B", en: "Yes! Let's test the new user profile feature.", pt: "Sim! Vamos testar a nova feature de perfil do usuário." },
+            { pessoa: "A", en: "I'll share my screen. What should we test first?", pt: "Vou compartilhar minha tela. O que devemos testar primeiro?" },
+            { pessoa: "B", en: "Let's start with the happy path - updating profile info.", pt: "Vamos começar com o caminho feliz - atualizar informações do perfil." },
+            { pessoa: "A", en: "Okay, I'm filling in the form now.", pt: "Ok, estou preenchendo o formulário agora." },
+            { pessoa: "B", en: "Try submitting without the required fields.", pt: "Tente enviar sem os campos obrigatórios." },
+            { pessoa: "A", en: "Good catch! The error message is not showing.", pt: "Boa pegada! A mensagem de erro não está aparecendo." },
+            { pessoa: "B", en: "I'll create a ticket for that. Let's continue testing.", pt: "Vou criar um ticket para isso. Vamos continuar testando." },
+            { pessoa: "A", en: "What about uploading a profile picture?", pt: "E quanto ao upload de foto de perfil?" },
+            { pessoa: "B", en: "Try uploading a file larger than 5MB.", pt: "Tente fazer upload de um arquivo maior que 5MB." },
+            { pessoa: "A", en: "It crashed! We definitely need to handle that.", pt: "Travou! Definitivamente precisamos tratar isso." },
+            { pessoa: "B", en: "Great session! We found two important bugs.", pt: "Ótima sessão! Encontramos dois bugs importantes." }
+        ]
     }
 ];
