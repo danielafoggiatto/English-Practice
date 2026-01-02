@@ -8,24 +8,28 @@ const state = {
     currentIndex: 0,
     isPlaying: false,
     speed: 0.9,
+    availableIndexes: [],  // Índices das frases ainda não usadas no Player
     quiz: {
         currentPhrase: null,
         correct: 0,
         wrong: 0,
-        hintUsed: false
+        hintUsed: false,
+        availableIndexes: [],  // Índices das frases ainda não usadas no Quiz
     },
     pronunciation: {
         currentPhrase: null,
         correct: 0,
         wrong: 0,
         isListening: false,
-        recognition: null
+        recognition: null,
+        availableIndexes: [],  // Índices das frases ainda não usadas
     },
     dialog: {
         current: null,
         currentStep: 0,
         isPlaying: false,
-        isPracticing: false
+        isPracticing: false,
+        isPaused: false
     },
     reading: {
         currentText: null,
@@ -66,6 +70,7 @@ const elements = {
 
     // Pronúncia
     pronPhrase: document.getElementById('pron-phrase'),
+    pronPhrasePt: document.getElementById('pron-phrase-pt'),
     pronResult: document.getElementById('pron-result'),
     pronFeedback: document.getElementById('pron-feedback'),
     btnPronNew: document.getElementById('btn-pron-new'),
@@ -82,6 +87,7 @@ const elements = {
     dialogDescription: document.getElementById('dialog-description'),
     dialogConversation: document.getElementById('dialog-conversation'),
     btnDialogStart: document.getElementById('btn-dialog-start'),
+    btnDialogPause: document.getElementById('btn-dialog-pause'),
     btnDialogRepeat: document.getElementById('btn-dialog-repeat'),
     btnDialogPractice: document.getElementById('btn-dialog-practice'),
     dialogStatus: document.getElementById('dialog-status'),
@@ -97,6 +103,9 @@ const elements = {
     readingSpeedSlider: document.getElementById('reading-speed'),
     readingSpeedValue: document.getElementById('reading-speed-value'),
     readingStatus: document.getElementById('reading-status'),
+    btnReadingTranslation: document.getElementById('btn-reading-translation'),
+    readingTranslationBox: document.getElementById('reading-translation-box'),
+    readingTranslation: document.getElementById('reading-translation'),
 
     // Mode buttons
     modeBtns: document.querySelectorAll('.mode-btn'),
@@ -141,6 +150,7 @@ function init() {
     // Event listeners - Diálogos
     elements.dialogSelect.addEventListener('change', onDialogSelect);
     elements.btnDialogStart.addEventListener('click', startDialog);
+    elements.btnDialogPause.addEventListener('click', togglePauseDialog);
     elements.btnDialogRepeat.addEventListener('click', repeatDialog);
     elements.btnDialogPractice.addEventListener('click', practiceDialog);
 
@@ -148,6 +158,7 @@ function init() {
     elements.btnReadingNew.addEventListener('click', loadRandomText);
     elements.btnReadingPlay.addEventListener('click', playReadingText);
     elements.btnReadingPause.addEventListener('click', togglePauseReading);
+    elements.btnReadingTranslation.addEventListener('click', toggleTranslation);
     elements.readingSpeedSlider.addEventListener('input', updateReadingSpeed);
     elements.readingLevel.addEventListener('change', loadRandomText);
 
@@ -197,9 +208,21 @@ function switchMode(mode) {
 // Funções do Player
 // ==========================================
 function loadRandomPhrase() {
-    const randomIndex = Math.floor(Math.random() * frases.length);
+    // Se não há mais frases disponíveis, reiniciar a lista
+    if (state.availableIndexes.length === 0) {
+        state.availableIndexes = [...Array(frases.length).keys()];
+        // Embaralhar a lista (Fisher-Yates shuffle)
+        for (let i = state.availableIndexes.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [state.availableIndexes[i], state.availableIndexes[j]] =
+                [state.availableIndexes[j], state.availableIndexes[i]];
+        }
+    }
+
+    // Pegar o próximo índice da lista e removê-lo
+    const randomIndex = state.availableIndexes.pop();
     state.currentPhrase = frases[randomIndex];
-    state.currentIndex = randomIndex + 1;
+    state.currentIndex = frases.length - state.availableIndexes.length;
 
     elements.phrasePt.textContent = state.currentPhrase.pt;
     elements.phraseEn.textContent = '???';
@@ -227,12 +250,13 @@ async function playPhrase() {
     elements.btnNew.disabled = true;
 
     try {
-        setStatus('🇧🇷 Falando português...');
+        // Destaca o português (apenas texto, sem falar)
+        setStatus('🇧🇷 Leia o português...');
         elements.phrasePt.classList.add('highlight');
-        await speak(state.currentPhrase.pt, 'pt-BR');
+        await delay(1500);
         elements.phrasePt.classList.remove('highlight');
 
-        await delay(800);
+        await delay(500);
 
         showEnglish();
         setStatus('🇺🇸 Falando inglês (1/2)...');
@@ -262,25 +286,38 @@ async function playPhrase() {
 // Funções do Quiz
 // ==========================================
 function startQuiz() {
-    if (elements.btnStartQuiz.textContent.includes('Iniciar')) {
-        state.quiz.correct = 0;
-        state.quiz.wrong = 0;
-        updateQuizScore();
-    }
+    // Sempre reiniciar ao clicar (seja iniciar ou reiniciar)
+    state.quiz.correct = 0;
+    state.quiz.wrong = 0;
+    state.quiz.availableIndexes = [];  // Forçar embaralhamento novo
+    updateQuizScore();
 
     loadQuizQuestion();
     elements.btnStartQuiz.textContent = '🔄 Reiniciar Quiz';
 }
 
 function loadQuizQuestion() {
-    const randomIndex = Math.floor(Math.random() * frases.length);
+    // Se não há mais frases disponíveis, reiniciar a lista
+    if (state.quiz.availableIndexes.length === 0) {
+        state.quiz.availableIndexes = [...Array(frases.length).keys()];
+        // Embaralhar a lista (Fisher-Yates shuffle)
+        for (let i = state.quiz.availableIndexes.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [state.quiz.availableIndexes[i], state.quiz.availableIndexes[j]] =
+                [state.quiz.availableIndexes[j], state.quiz.availableIndexes[i]];
+        }
+    }
+
+    // Pegar o próximo índice da lista e removê-lo
+    const randomIndex = state.quiz.availableIndexes.pop();
     state.quiz.currentPhrase = frases[randomIndex];
     state.quiz.hintUsed = false;
 
+    const current = frases.length - state.quiz.availableIndexes.length;
     elements.quizPhrasePt.textContent = state.quiz.currentPhrase.pt;
     elements.quizAnswer.value = '';
     elements.quizAnswer.disabled = false;
-    elements.quizFeedback.textContent = '';
+    elements.quizFeedback.textContent = `Questão ${current} de ${frases.length}`;
     elements.quizFeedback.className = 'quiz-feedback';
 
     elements.btnCheck.disabled = false;
@@ -407,10 +444,23 @@ function initSpeechRecognition() {
 }
 
 function loadPronunciationPhrase() {
-    const randomIndex = Math.floor(Math.random() * frases.length);
+    // Se não há mais frases disponíveis, reiniciar a lista
+    if (state.pronunciation.availableIndexes.length === 0) {
+        state.pronunciation.availableIndexes = [...Array(frases.length).keys()];
+        // Embaralhar a lista (Fisher-Yates shuffle)
+        for (let i = state.pronunciation.availableIndexes.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [state.pronunciation.availableIndexes[i], state.pronunciation.availableIndexes[j]] =
+                [state.pronunciation.availableIndexes[j], state.pronunciation.availableIndexes[i]];
+        }
+    }
+
+    // Pegar o próximo índice da lista e removê-lo
+    const randomIndex = state.pronunciation.availableIndexes.pop();
     state.pronunciation.currentPhrase = frases[randomIndex];
 
     elements.pronPhrase.textContent = state.pronunciation.currentPhrase.en;
+    elements.pronPhrasePt.textContent = state.pronunciation.currentPhrase.pt;
     elements.pronResult.textContent = 'Sua fala aparecerá aqui...';
     elements.pronFeedback.textContent = '';
     elements.pronFeedback.className = 'pronunciation-feedback';
@@ -418,7 +468,9 @@ function loadPronunciationPhrase() {
     elements.btnPronListen.disabled = false;
     elements.btnPronSpeak.disabled = false;
 
-    setPronStatus('Frase carregada! Ouça e depois tente falar.');
+    const remaining = state.pronunciation.availableIndexes.length;
+    const total = frases.length;
+    setPronStatus(`Frase carregada! (${total - remaining}/${total}) Ouça e depois tente falar.`);
 }
 
 function listenPronunciationPhrase() {
@@ -508,6 +560,7 @@ function onDialogSelect() {
     if (!selectedId) {
         elements.dialogDescription.classList.remove('visible');
         elements.btnDialogStart.disabled = true;
+        elements.btnDialogPractice.disabled = true;
         return;
     }
 
@@ -519,17 +572,20 @@ function onDialogSelect() {
     elements.dialogConversation.innerHTML = '';
 
     elements.btnDialogStart.disabled = false;
+    elements.btnDialogPause.disabled = true;
     elements.btnDialogRepeat.disabled = true;
-    elements.btnDialogPractice.disabled = true;
+    elements.btnDialogPractice.disabled = false;  // Disponível desde o início
 
-    setDialogStatus('Clique em Iniciar para ouvir o diálogo.');
+    setDialogStatus('Clique em Iniciar para ouvir ou Praticar para ir direto.');
 }
 
 async function startDialog() {
     if (!state.dialog.current || state.dialog.isPlaying) return;
 
     state.dialog.isPlaying = true;
+    state.dialog.isPaused = false;
     elements.btnDialogStart.disabled = true;
+    elements.btnDialogPause.disabled = false;
     elements.btnDialogRepeat.disabled = true;
     elements.btnDialogPractice.disabled = true;
     elements.dialogConversation.innerHTML = '';
@@ -537,6 +593,14 @@ async function startDialog() {
     const conversa = state.dialog.current.conversa;
 
     for (let i = 0; i < conversa.length; i++) {
+        // Verificar se foi pausado
+        if (state.dialog.isPaused) {
+            await waitForResume();
+        }
+
+        // Verificar se foi interrompido (saiu do modo ou selecionou outro)
+        if (!state.dialog.isPlaying) break;
+
         const msg = conversa[i];
 
         // Criar elemento da mensagem
@@ -561,17 +625,59 @@ async function startDialog() {
         msgEl.classList.remove('active');
 
         // Pausa entre mensagens
+        if (state.dialog.isPaused) {
+            await waitForResume();
+        }
+        if (!state.dialog.isPlaying) break;
         await delay(600);
     }
 
     state.dialog.isPlaying = false;
+    state.dialog.isPaused = false;
     elements.btnDialogStart.disabled = false;
+    elements.btnDialogPause.disabled = true;
+    elements.btnDialogPause.textContent = '⏸️ Pausar';
     elements.btnDialogRepeat.disabled = false;
     elements.btnDialogPractice.disabled = false;
-    setDialogStatus('✅ Diálogo completo! Pratique as respostas.');
+    if (state.dialog.current) {
+        setDialogStatus('✅ Diálogo completo! Pratique as respostas.');
+    }
+}
+
+function togglePauseDialog() {
+    if (!state.dialog.isPlaying && !state.dialog.isPracticing) return;
+
+    if (state.dialog.isPaused) {
+        // Retomar
+        state.dialog.isPaused = false;
+        elements.btnDialogPause.textContent = '⏸️ Pausar';
+        setDialogStatus('▶️ Retomando...');
+    } else {
+        // Pausar
+        state.dialog.isPaused = true;
+        speechSynthesis.cancel();  // Para a fala atual
+        elements.btnDialogPause.textContent = '▶️ Continuar';
+        setDialogStatus('⏸️ Pausado. Clique em Continuar.');
+    }
+}
+
+function waitForResume() {
+    return new Promise(resolve => {
+        const checkResume = setInterval(() => {
+            const isActive = state.dialog.isPlaying || state.dialog.isPracticing;
+            if (!state.dialog.isPaused || !isActive) {
+                clearInterval(checkResume);
+                resolve();
+            }
+        }, 100);
+    });
 }
 
 async function repeatDialog() {
+    speechSynthesis.cancel();
+    state.dialog.isPlaying = false;
+    state.dialog.isPaused = false;
+    await delay(100);
     elements.dialogConversation.innerHTML = '';
     await startDialog();
 }
@@ -580,7 +686,9 @@ async function practiceDialog() {
     if (!state.dialog.current || state.dialog.isPracticing) return;
 
     state.dialog.isPracticing = true;
+    state.dialog.isPaused = false;
     elements.btnDialogStart.disabled = true;
+    elements.btnDialogPause.disabled = false;
     elements.btnDialogRepeat.disabled = true;
     elements.btnDialogPractice.disabled = true;
     elements.dialogConversation.innerHTML = '';
@@ -588,6 +696,14 @@ async function practiceDialog() {
     const conversa = state.dialog.current.conversa;
 
     for (let i = 0; i < conversa.length; i++) {
+        // Verificar se foi pausado
+        if (state.dialog.isPaused) {
+            await waitForResume();
+        }
+
+        // Verificar se foi interrompido
+        if (!state.dialog.isPracticing) break;
+
         const msg = conversa[i];
 
         const msgEl = document.createElement('div');
@@ -607,6 +723,8 @@ async function practiceDialog() {
             await speak(msg.en, 'en-US');
             msgEl.classList.remove('active');
 
+            if (state.dialog.isPaused) await waitForResume();
+            if (!state.dialog.isPracticing) break;
             await delay(500);
         } else {
             // Pessoa B (você) - mostrar o que deve falar
@@ -620,19 +738,28 @@ async function practiceDialog() {
             msgEl.classList.add('active');
             setDialogStatus('🎤 Sua vez! Fale a frase destacada...');
 
-            // Esperar o usuário falar
+            // Esperar o usuário falar (se não estiver pausado)
+            if (state.dialog.isPaused) await waitForResume();
+            if (!state.dialog.isPracticing) break;
             await waitForUserSpeech(msg.en);
 
             msgEl.classList.remove('active');
+            if (state.dialog.isPaused) await waitForResume();
+            if (!state.dialog.isPracticing) break;
             await delay(500);
         }
     }
 
     state.dialog.isPracticing = false;
+    state.dialog.isPaused = false;
     elements.btnDialogStart.disabled = false;
+    elements.btnDialogPause.disabled = true;
+    elements.btnDialogPause.textContent = '⏸️ Pausar';
     elements.btnDialogRepeat.disabled = false;
     elements.btnDialogPractice.disabled = false;
-    setDialogStatus('✅ Prática completa! Excelente trabalho!');
+    if (state.dialog.current) {
+        setDialogStatus('✅ Prática completa! Excelente trabalho!');
+    }
 }
 
 function waitForUserSpeech(expectedPhrase) {
@@ -762,23 +889,35 @@ function loadRandomText() {
     elements.btnReadingPlay.disabled = false;
     elements.btnReadingPause.disabled = true;
 
+    // Configurar tradução (se disponível)
+    if (state.reading.currentText.traducao) {
+        elements.readingTranslation.textContent = state.reading.currentText.traducao;
+        elements.btnReadingTranslation.disabled = false;
+    } else {
+        elements.readingTranslation.textContent = '';
+        elements.btnReadingTranslation.disabled = true;
+    }
+    // Ocultar tradução ao carregar novo texto
+    elements.readingTranslationBox.style.display = 'none';
+    elements.btnReadingTranslation.textContent = '🇧🇷 Tradução';
+
     // Parar qualquer leitura em andamento
     speechSynthesis.cancel();
     state.reading.isPlaying = false;
     state.reading.isPaused = false;
     elements.btnReadingPlay.textContent = '▶️ Ouvir Texto';
 
-    setReadingStatus('Texto carregado! Clique em "Ouvir Texto" para começar.');
+    const hasTranslation = state.reading.currentText.traducao ? ' (tem tradução!)' : '';
+    setReadingStatus('Texto carregado!' + hasTranslation + ' Clique em "Ouvir Texto" para começar.');
 }
 
 function updateLevelBadge(nivel) {
     const nivelMap = {
-        'beginner': { text: 'Iniciante', class: 'level-beginner' },
-        'intermediate': { text: 'Intermediário', class: 'level-intermediate' },
-        'advanced': { text: 'Avançado', class: 'level-advanced' }
+        'vital-frosi': { text: '📖 Vital Frosi', class: 'level-advanced' },
+        'qa': { text: '💻 QA / Automação', class: 'level-intermediate' }
     };
 
-    const info = nivelMap[nivel];
+    const info = nivelMap[nivel] || { text: nivel, class: 'level-beginner' };
     elements.readingLevelBadge.textContent = info.text;
     elements.readingLevelBadge.className = 'level-badge ' + info.class;
 }
@@ -925,6 +1064,20 @@ function updateReadingSpeed() {
 
 function setReadingStatus(message) {
     elements.readingStatus.textContent = message;
+}
+
+function toggleTranslation() {
+    if (!state.reading.currentText || !state.reading.currentText.traducao) return;
+
+    const isVisible = elements.readingTranslationBox.style.display !== 'none';
+
+    if (isVisible) {
+        elements.readingTranslationBox.style.display = 'none';
+        elements.btnReadingTranslation.textContent = '🇧🇷 Tradução';
+    } else {
+        elements.readingTranslationBox.style.display = 'block';
+        elements.btnReadingTranslation.textContent = '🇧🇷 Ocultar';
+    }
 }
 
 // ==========================================
