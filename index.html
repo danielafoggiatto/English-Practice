@@ -150,6 +150,11 @@
                         <p id="pron-phrase" class="phrase">Clique em "Nova Frase" para começar</p>
                     </div>
 
+                    <div class="phrase-box pronunciation-translation">
+                        <span class="flag">🇧🇷</span>
+                        <p id="pron-phrase-pt" class="phrase phrase-translation">A tradução aparecerá aqui...</p>
+                    </div>
+
                     <div class="phrase-box pronunciation-result">
                         <span class="flag">🎤</span>
                         <p id="pron-result" class="phrase">Sua fala aparecerá aqui...</p>
@@ -205,6 +210,9 @@
                         <button id="btn-dialog-start" class="btn btn-primary" disabled>
                             ▶️ Iniciar Diálogo
                         </button>
+                        <button id="btn-dialog-pause" class="btn btn-secondary" disabled>
+                            ⏸️ Pausar
+                        </button>
                         <button id="btn-dialog-repeat" class="btn btn-secondary" disabled>
                             🔄 Repetir
                         </button>
@@ -229,12 +237,11 @@
                 <div class="reading-container">
                     <div class="reading-header">
                         <div class="reading-level-selector">
-                            <label for="reading-level">Nível:</label>
+                            <label for="reading-level">Categoria:</label>
                             <select id="reading-level">
                                 <option value="all">Todos</option>
-                                <option value="beginner">Iniciante</option>
-                                <option value="intermediate">Intermediário</option>
-                                <option value="advanced">Avançado</option>
+                                <option value="vital-frosi">📖 Vital Frosi</option>
+                                <option value="qa">💻 QA / Automação</option>
                             </select>
                         </div>
                         <span id="reading-level-badge" class="level-badge"></span>
@@ -251,6 +258,11 @@
                         </p>
                     </div>
 
+                    <div class="reading-translation-box" id="reading-translation-box" style="display: none;">
+                        <div class="translation-header">🇧🇷 Tradução:</div>
+                        <p id="reading-translation" class="reading-translation"></p>
+                    </div>
+
                     <div class="reading-controls">
                         <button id="btn-reading-new" class="btn btn-primary">
                             🎲 Novo Texto
@@ -260,6 +272,9 @@
                         </button>
                         <button id="btn-reading-pause" class="btn btn-secondary" disabled>
                             ⏸️ Pausar
+                        </button>
+                        <button id="btn-reading-translation" class="btn btn-secondary" disabled>
+                            🇧🇷 Tradução
                         </button>
                     </div>
 
