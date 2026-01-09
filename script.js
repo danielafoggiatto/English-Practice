@@ -1045,12 +1045,14 @@ function togglePauseReading() {
     if (!state.reading.isPlaying) return;
 
     if (state.reading.isPaused) {
-        speechSynthesis.resume();
+        // Retomar - reiniciar a partir do chunk atual (resume() não funciona bem)
         state.reading.isPaused = false;
         elements.btnReadingPause.textContent = '⏸️ Pausar';
         setReadingStatus('🔊 Continuando leitura...');
+        speakNextChunk();
     } else {
-        speechSynthesis.pause();
+        // Pausar - cancelar e marcar como pausado
+        speechSynthesis.cancel();
         state.reading.isPaused = true;
         elements.btnReadingPause.textContent = '▶️ Continuar';
         setReadingStatus('⏸️ Leitura pausada.');
